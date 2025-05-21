@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CRUD OO MVC DAO</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Olá, seja bem-vindo!</h1>
+    <p>O que deseja fazer?</p>
+    
+    <div class="menu">
+        <!<!-- Botão para carregar o formulario.jsp -->
+        <!<!-- Passando a referencia da lista para a combobox ser preenchida localizada no controle_setor -->
+        <button onclick="window.location.href='controle_setor?op=comboboxsetor'">
+        Cadastrar Produto
+    </button>
+        
+        <!<!-- Botão para carregar o resultadoconsultartodos.jsp -->
+        <!<!-- Passando a referencia da lista localizada controle_produto -->
+        <button onclick="window.location.href='controle_produto?op=CONSULTAR TODOS'">
+        Consultar Todos os Produtos
+    </button>
+    
+    </div>
+</body>
+</html>
