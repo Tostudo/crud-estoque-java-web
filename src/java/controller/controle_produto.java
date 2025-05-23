@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Produto;
 import model.Setor;
+import util.ValidadorProduto;
 
 /**
  *
@@ -45,6 +46,7 @@ public class controle_produto extends HttpServlet {
             String op = request.getParameter("op");
             ProdutoDAO pdao = new ProdutoDAO();
             Produto p = new Produto();
+            String msg = "";
 
             if (op != null && op.trim().equals("CADASTRAR")) {
 
@@ -52,44 +54,23 @@ public class controle_produto extends HttpServlet {
                 String marca = request.getParameter("txtmarca");
                 String dataStr = request.getParameter("txtultimaatualizacao");
                 String idSetorStr = request.getParameter("txtidsetor");
-                String msg = "";
+                int quantidade = Integer.parseInt(request.getParameter("txtquantidade"));
+                double preco = Double.parseDouble(request.getParameter("txtpreco"));
+
+                // Conversão da data
+                java.sql.Date dataConvertida;
+                try {
+                    dataConvertida = java.sql.Date.valueOf(dataStr);
+                } catch (IllegalArgumentException ex) {
+                    msg = "Data inválida. Use o formato AAAA-MM-DD.";
+                    request.setAttribute("message", msg);
+                    request.getRequestDispatcher("erro.jsp").forward(request, response);
+                    return;
+                }
+
+                int idSetor = Integer.parseInt(idSetorStr);
 
                 try {
-                    int quantidade = Integer.parseInt(request.getParameter("txtquantidade"));
-                    double preco = Double.parseDouble(request.getParameter("txtpreco"));
-
-                    // Validações de campos obrigatórios
-                    if (descricao == null || descricao.trim().isEmpty()
-                            || marca == null || marca.trim().isEmpty()
-                            || dataStr == null || dataStr.trim().isEmpty()
-                            || idSetorStr == null || idSetorStr.trim().isEmpty()) {
-
-                        msg = "Todos os campos devem ser preenchidos.";
-                        request.setAttribute("message", msg);
-                        request.getRequestDispatcher("erro.jsp").forward(request, response);
-                        return;
-                    }
-
-                    // Validação de valores negativos
-                    if (quantidade < 0 || preco < 0) {
-                        msg = "Quantidade e preço devem ser maiores ou iguais a zero.";
-                        request.setAttribute("message", msg);
-                        request.getRequestDispatcher("erro.jsp").forward(request, response);
-                        return;
-                    }
-
-                    // Conversão da data
-                    java.sql.Date dataConvertida;
-                    try {
-                        dataConvertida = java.sql.Date.valueOf(dataStr);
-                    } catch (IllegalArgumentException ex) {
-                        msg = "Data inválida. Use o formato AAAA-MM-DD.";
-                        request.setAttribute("message", msg);
-                        request.getRequestDispatcher("erro.jsp").forward(request, response);
-                        return;
-                    }
-
-                    int idSetor = Integer.parseInt(idSetorStr);
 
                     // Preenche o objeto
                     p.setDescricao(descricao);
@@ -98,6 +79,22 @@ public class controle_produto extends HttpServlet {
                     p.setPreco(preco);
                     p.setUltimaatualizacao(dataConvertida);
                     p.setIdSetor(idSetor);
+
+                    // ✅ Validações usando a classe ValidadorProduto
+                    String erroCampos = ValidadorProduto.validarCamposObrigatorios(p);
+                    String erroNumeros = ValidadorProduto.validarValoresNumericos(p);
+
+                    if (erroCampos != null) {
+                        request.setAttribute("message", erroCampos);
+                        request.getRequestDispatcher("erro.jsp").forward(request, response);
+                        return; // Impede que o programa continue cadastrando se cair em alguma exceção
+                    }
+
+                    if (erroNumeros != null) {
+                        request.setAttribute("message", erroNumeros);
+                        request.getRequestDispatcher("erro.jsp").forward(request, response);
+                        return; // Impede que o programa continue cadastrando se cair em alguma exceção
+                    }
 
                     // Cadastra
                     pdao.cadastrar(p);
@@ -118,8 +115,9 @@ public class controle_produto extends HttpServlet {
             } else if (op != null && op.trim().equals("DELETAR")) {
                 int id = Integer.parseInt(request.getParameter("txtid"));
                 p.setId(id);
-                String msg = "Deletar";
+                msg = "Deletar";
                 try {
+
                     pdao.deletar(p);
                     List<Produto> lprod = pdao.consultarTodos();
                     request.setAttribute("lprod", lprod);
@@ -133,7 +131,9 @@ public class controle_produto extends HttpServlet {
                 int id = Integer.parseInt(request.getParameter("txtid"));
                 p.setId(id);
                 try {
+
                     p = pdao.consultarById(p);
+
                     request.setAttribute("p", p);
                     request.getRequestDispatcher("resultadoconsultarbyid.jsp").forward(request, response);
                 } catch (ClassNotFoundException | SQLException ex) {
@@ -150,48 +150,87 @@ public class controle_produto extends HttpServlet {
                 }
 
             } else if (op != null && op.trim().equals("ATUALIZAR")) {
+
                 int id = Integer.parseInt(request.getParameter("txtid"));
                 p.setId(id);
+
                 try {
+
                     p = pdao.consultarById(p);
 
+                    // Carrega lista de setores para o combobox
                     SetorDAO sdao = new SetorDAO();
                     List<Setor> setor = sdao.listarTodos();
 
+                    // Encaminha para tela de atualização com os dados do produto
                     request.setAttribute("p", p);
                     request.setAttribute("setor", setor);
                     request.getRequestDispatcher("resultadoconsultaratualizar.jsp").forward(request, response);
+
                 } catch (ClassNotFoundException | SQLException ex) {
-                    System.out.println("Erro ClassNotFound: " + ex.getMessage());
+                    System.out.println("Erro ao consultar produto para atualização: " + ex.getMessage());
+                    request.setAttribute("message", "Erro ao consultar produto.");
+                    request.getRequestDispatcher("erro.jsp").forward(request, response);
                 }
             } else if (op != null && op.trim().equals("CONFIRMAR ATUALIZAÇÃO")) {
 
                 int id = Integer.parseInt(request.getParameter("txtid"));
                 String descricao = request.getParameter("txtdescricao");
                 String marca = request.getParameter("txtmarca");
+                String dataStr = request.getParameter("txtultimaatualizacao");
+                String idSetorStr = request.getParameter("comboboxsetor");
                 int quantidade = Integer.parseInt(request.getParameter("txtquantidade"));
                 double preco = Double.parseDouble(request.getParameter("txtpreco"));
-                String dataStr = request.getParameter("txtultimaatualizacao");
-                java.sql.Date dataConvertida = java.sql.Date.valueOf(dataStr);
-                int idSetor = Integer.parseInt(request.getParameter("comboboxsetor"));
-
-                p.setId(id);
-                p.setDescricao(descricao);
-                p.setMarca(marca);
-                p.setQuantidade(quantidade);
-                p.setPreco(preco);
-                p.setUltimaatualizacao(dataConvertida);
-                p.setIdSetor(idSetor);
-
-                String msg = "Atualizar";
+                // Conversão da data
+                java.sql.Date dataConvertida;
                 try {
+                    dataConvertida = java.sql.Date.valueOf(dataStr);
+                } catch (IllegalArgumentException ex) {
+                    msg = "Data inválida. Use o formato AAAA-MM-DD.";
+                    request.setAttribute("message", msg);
+                    request.getRequestDispatcher("erro.jsp").forward(request, response);
+                    return;
+                }
+                int idSetor = Integer.parseInt(idSetorStr);
+                try {
+
+                    // Preenchendo o produto
+                    p.setId(id);
+                    p.setDescricao(descricao);
+                    p.setMarca(marca);
+                    p.setQuantidade(quantidade);
+                    p.setPreco(preco);
+                    p.setUltimaatualizacao(dataConvertida);
+                    p.setIdSetor(idSetor);
+
+                    // ✅ Validações usando a classe ValidadorProduto
+                    String erroCampos = ValidadorProduto.validarCamposObrigatorios(p);
+                    String erroNumeros = ValidadorProduto.validarValoresNumericos(p);
+
+                    if (erroCampos != null) {
+                        request.setAttribute("message", erroCampos);
+                        request.getRequestDispatcher("erro.jsp").forward(request, response);
+                        return; // Impede que o programa continue cadastrando se cair em alguma exceção
+                    }
+
+                    if (erroNumeros != null) {
+                        request.setAttribute("message", erroNumeros);
+                        request.getRequestDispatcher("erro.jsp").forward(request, response);
+                        return; // Impede que o programa continue cadastrando se cair em alguma exceção
+                    }
+
+                    // Atualiza no banco
                     pdao.atualizar(p);
-                    System.out.println("Atuaizado com sucesso!!");
-                    request.setAttribute("message", msg);
+                    System.out.println("Atualizado com sucesso!!");
+                    request.setAttribute("message", "Produto atualizado com sucesso!");
                     request.getRequestDispatcher("resultado.jsp").forward(request, response);
-                } catch (ClassNotFoundException | SQLException ex) {
-                    System.out.println("Erro ClassNotFound: " + ex.getMessage());
-                    request.setAttribute("message", msg);
+
+                } catch (NumberFormatException e) {
+                    request.setAttribute("message", "Quantidade ou preço inválidos.");
+                    request.getRequestDispatcher("erro.jsp").forward(request, response);
+                } catch (Exception ex) {
+                    System.out.println("Erro ao atualizar: " + ex.getMessage());
+                    request.setAttribute("message", "Erro ao atualizar: " + ex.getMessage());
                     request.getRequestDispatcher("erro.jsp").forward(request, response);
                 }
 

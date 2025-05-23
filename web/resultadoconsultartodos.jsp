@@ -16,6 +16,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Resultado Consultar Todos</title>
+        <link rel="stylesheet" href="css/consultatodos.css">
     </head>
     <body>
         <h1>Todos os Produtos</h1>
@@ -60,7 +61,7 @@
                 <td><%=p.getUltimaatualizacao()%></td>
                 <td><%=p.getNomeSetor()%></td>
 
-                <td align="center"><a href="controle_produto?op=DELETAR&txtid=<%out.print(p.getId());%>"><img src="images/lixeira01.png" width="25" height="25"></a></td>
+                <td align="center"><a href="controle_produto?op=DELETAR&txtid=<%=p.getId()%>"><img src="images/lixeira01.png" width="25" height="25"></a></td>
 
                 <td align="center">
                     <a href="controle_produto?op=ATUALIZAR&txtid=<%=p.getId()%>">

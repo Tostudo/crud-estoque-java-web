@@ -10,13 +10,14 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Página Resultado</title>
+        <link rel="stylesheet" href="css/resultado.css">
     </head>
     <body>
         <%
            String msg = (String) request.getAttribute("message");
         %>
         
-        <h1><%out.println(msg);%> realizado com sucesso.</h1>
+        <h1><%= msg%> realizado com sucesso.</h1>
         
         <!-- Botão para voltar à página inicial -->
 <button type="button" onclick="window.location.href='index.html'">

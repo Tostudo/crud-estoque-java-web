@@ -12,6 +12,7 @@
     <head>
         <title>Cadastro de Produto</title>
         <meta charset="UTF-8">
+        <link rel="stylesheet" href="css/formulario.css"><!-- comment -->
     </head>
     <body>
 
@@ -20,11 +21,11 @@
         <form name="f1" action="controle_produto" method="GET">
             <div><h1>CADASTRO DE PRODUTO</h1></div>
 
-            DESCRIÇÃO..........: <input type="text" name="txtdescricao"><br>
-            MARCA..............: <input type="text" name="txtmarca"><br>
-            QUANTIDADE.........: <input type="number" name="txtquantidade"><br>
-            PREÇO..............: <input type="text" name="txtpreco"><br>
-            ÚLTIMA ATUALIZAÇÃO.: <input type="date" name="txtultimaatualizacao"><br><br>
+            DESCRIÇÃO <input type="text" name="txtdescricao"><br>
+            MARCA<input type="text" name="txtmarca"><br>
+            QUANTIDADE<input type="number" name="txtquantidade"><br>
+            PREÇO<input type="text" name="txtpreco"><br>
+            ÚLTIMA ATUALIZAÇÃO<input type="date" name="txtultimaatualizacao"><br><br>
 
 
             <%

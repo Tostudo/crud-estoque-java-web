@@ -13,6 +13,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Atualizar Produto</title>
+        <link rel="stylesheet" href="css/consultaratualizar.css">
     </head>
     <body>
         <h1>Atualizar Produto</h1>

@@ -12,6 +12,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Filtrar Produtos por Setor</title>
+    <link rel="stylesheet" href="css/filtrosetor.css">
 </head>
 <body>
     <h1>Filtrar Produtos por Setor</h1>

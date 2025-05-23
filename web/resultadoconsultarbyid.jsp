@@ -11,6 +11,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Resultado Cosultar By ID</title>
+        <link rel="stylesheet" href="css/consultarbyid.css">
     </head>
     <body>
         <h1>Resultado Consultar By ID</h1>
