@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://jakarta.ee/xml/ns/jakartaee
+                             http://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
+         version="5.0">
+
+    <display-name>CRUD Estoque Java Web</display-name>
+
+    <!-- Servlet controle_produto -->
+    <servlet>
+        <servlet-name>controle_produto</servlet-name>
+        <servlet-class>controller.controle_produto</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>controle_produto</servlet-name>
+        <url-pattern>/controle_produto</url-pattern>
+    </servlet-mapping>
+
+    <!-- Servlet controle_setor -->
+    <servlet>
+        <servlet-name>controle_setor</servlet-name>
+        <servlet-class>controller.controle_setor</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>controle_setor</servlet-name>
+        <url-pattern>/controle_setor</url-pattern>
+    </servlet-mapping>
+
+    <!-- Página padrão -->
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+</web-app>
