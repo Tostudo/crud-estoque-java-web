@@ -40,14 +40,118 @@ public class controle_setor extends HttpServlet {
             String op = request.getParameter("op");
             SetorDAO sdao = new SetorDAO();
             Setor s = new Setor();
+            String msg = "";
             
-            if(op.equals("comboboxsetor")){
+            if(op != null && op.trim().equals("comboboxsetor")){
                 
-                String msg = "";
+                
                 try{
                     List<Setor> setores = new SetorDAO().listarTodos();
                     request.setAttribute("setores", setores);
                     request.getRequestDispatcher("formulario.jsp").forward(request, response);
+                }catch(ClassNotFoundException | SQLException ex){
+                    System.out.println("Erro ClassNotFound: " + ex.getMessage());
+                    request.setAttribute("message", msg);
+                    request.getRequestDispatcher("erro.jsp").forward(request, response);
+                }
+            }else if (op != null && op.trim().equals("CADASTRAR")){
+                
+                String nome = request.getParameter("txtnome");
+                String diretor = request.getParameter("txtdiretor");
+                int qtdFuncionarios = Integer.parseInt(request.getParameter("txtqtdfuncionarios"));
+                
+                // preencher o objeto
+                
+                s.setNome(nome);
+                s.setDiretor(diretor);
+                s.setQtdfuncionarios(qtdFuncionarios);
+                
+                try{
+                    sdao.cadastrar(s);
+                    msg = "Setor cadastrado com sucesso!";
+                    request.setAttribute("message", msg);
+                    request.getRequestDispatcher("resultado.jsp").forward(request, response);
+                }catch(ClassNotFoundException | SQLException ex){
+                    msg = ex.getMessage();
+                    request.setAttribute("message", msg);
+                    request.getRequestDispatcher("erro.jsp").forward(request, response);
+                }
+            }else if(op != null && op.trim().equals("DELETAR")){
+                int id = Integer.parseInt(request.getParameter("txtid"));
+                
+                // preencher o objeto
+                
+                s.setId(id);
+                
+                try{
+                    sdao.deletar(s);
+                    msg = "Deletado com sucesso!";
+                    request.setAttribute("message", msg);
+                    request.getRequestDispatcher("resultado.jsp").forward(request, response);
+                }catch(ClassNotFoundException | SQLException ex){
+                    msg = ex.getMessage();
+                    request.setAttribute("message", msg);
+                    request.getRequestDispatcher("erro.jsp").forward(request, response);
+                }
+            }else if (op != null && op.trim().equals("CONSULTARBYID")){
+                int id = Integer.parseInt(request.getParameter("txtid"));
+                
+                // preenche o objeto
+                s.setId(id);
+                try{
+                    s = sdao.consultarById(s);
+                    
+                    request.setAttribute("setor", s);
+                    request.getRequestDispatcher("formulario_setor.jsp").forward(request, response);
+                }catch(ClassNotFoundException | SQLException ex){
+                    msg = ex.getMessage();
+                    request.setAttribute("message", msg);
+                    request.getRequestDispatcher("erro.jsp").forward(request, response);
+                }
+            }else if (op != null && op.trim().equals("ATUALIZAR")){
+                int id = Integer.parseInt(request.getParameter("txtid"));
+                
+                //preenche o objeto
+                
+                s.setId(id);
+                
+                try{
+                    sdao.consultarById(s);
+                    request.setAttribute("s", s);
+                    request.getRequestDispatcher("formulario_setor.jsp").forward(request, response);
+                }catch(ClassNotFoundException | SQLException ex){
+                    msg = ex.getMessage();
+                    request.setAttribute("message", msg);
+                    request.getRequestDispatcher("erro.jsp").forward(request, response);
+                }
+            }else if (op != null && op.trim().equals("CONFIRMARATUALIZAÇÃO")){
+                int id = Integer.parseInt(request.getParameter("txtid"));
+                String nome = request.getParameter("txtnome");
+                String diretor = request.getParameter("txtdiretor");
+                int qtdfuncionarios = Integer.parseInt(request.getParameter("txtqtdfuncionarios"));
+                
+                // preenche o objeto
+                
+                s.setId(id);
+                s.setNome(nome);
+                s.setDiretor(diretor);
+                s.setQtdfuncionarios(qtdfuncionarios);
+                
+                try{
+                    sdao.atualizar(s);
+                    msg = "Setor Atualizado com sucesso";
+                    request.setAttribute("message", msg);
+                    request.getRequestDispatcher("resultado.jsp").forward(request, response);
+                }catch(ClassNotFoundException | SQLException ex){
+                    msg = ex.getMessage();
+                    request.setAttribute("message", msg);
+                    request.getRequestDispatcher("erro.jsp").forward(request, response);
+                }
+            } else if (op != null && op.trim().equals("CONSULTAR TODOS")){
+                try{
+                    List<Setor> setores = new SetorDAO().listarTodos();
+                    request.setAttribute("setores", setores);
+                    request.getRequestDispatcher("listar_setores.jsp").forward(request, response);
                 }catch(ClassNotFoundException | SQLException ex){
                     System.out.println("Erro ClassNotFound: " + ex.getMessage());
                     request.setAttribute("message", msg);
