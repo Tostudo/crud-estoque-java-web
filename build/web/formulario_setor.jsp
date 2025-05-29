@@ -14,6 +14,10 @@
         <link rel="stylesheet" href="css/formulario_setor.css">
     </head>
     <body>
+        
+        <img src="images/sung-solo.png" alt="Fundo Solo Leveling" class="bg-image">
+
+        
         <%
             Setor setor = (Setor) request.getAttribute("setor");
             boolean isEdicao = (setor != null);

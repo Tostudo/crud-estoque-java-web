@@ -8,14 +8,33 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
 */
 
 /* index.css */
+
+/* Imagem de fundo em tela cheia */
+.bg-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -1;
+    
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(to right, #f0f2f5, #d9e2ec);
     margin: 0;
-    padding: 2rem;
-    text-align: center;
-    color: #333;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    color: black; /* Texto preto para melhor contraste */
+    position: relative; /* Garante que elementos posicionados dentro do body sejam respeitados */
+    z-index: 1;
 }
+
+
 
 h1 {
     font-size: 2rem;
